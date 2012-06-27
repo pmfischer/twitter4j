@@ -25,6 +25,7 @@ import twitter4j.internal.http.HttpParameter;
 import twitter4j.internal.logging.Logger;
 import twitter4j.internal.util.z_T4JInternalStringUtil;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
@@ -159,6 +160,26 @@ class TwitterStreamImpl extends TwitterBaseImpl implements TwitterStream {
         try {
             return new StatusStreamImpl(getDispatcher(), http.get(conf.getStreamBaseURL() + "statuses/sample.json"
                     , auth), conf);
+        } catch (IOException e) {
+            throw new TwitterException(e);
+        }
+    }
+    
+    public void statusFromFile(final String fileName) {
+        ensureListenerIsSet();
+        ensureStatusStreamListenerIsSet();
+        startHandler(new TwitterStreamConsumer() {
+            public StatusStream getStream() throws TwitterException {
+                return getStreamFile(fileName);
+            }
+        });
+
+    }
+    
+    public StatusStream getStreamFile(String fileName) throws TwitterException {
+        try {
+            return new StatusStreamImpl(getDispatcher(), new FileInputStream(fileName) 
+                    , conf);
         } catch (IOException e) {
             throw new TwitterException(e);
         }

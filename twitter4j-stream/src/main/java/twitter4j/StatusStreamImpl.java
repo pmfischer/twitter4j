@@ -40,7 +40,7 @@ class StatusStreamImpl extends AbstractStreamImplementation implements StatusStr
     }
     /*package*/
 
-    StatusStreamImpl(Dispatcher dispatcher, HttpResponse response, Configuration conf) throws IOException {
+    public StatusStreamImpl(Dispatcher dispatcher, HttpResponse response, Configuration conf) throws IOException {
         super(dispatcher, response, conf);
     }
 

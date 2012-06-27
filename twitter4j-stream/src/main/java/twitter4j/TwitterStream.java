@@ -133,6 +133,20 @@ public interface TwitterStream extends OAuthSupport, TwitterBase {
     StatusStream getSampleStream() throws TwitterException;
 
     /**
+     * Runs a listener/callback on status updates from a file (in JSON format)
+     * @param fileName
+     */
+    void statusFromFile(String fileName);
+    
+    /**
+     * Returns a status stream from a file (in JSON format)
+     * @param fileName
+     * @return a stream with status updates, according to the contents in the file
+     * @throws TwitterException
+     */
+    StatusStream getStreamFile(String fileName) throws TwitterException;
+    
+    /**
      * User Streams provides real-time updates of all data needed to update a desktop application display. Applications can request startup back-fill from the REST API and then transition to Streaming for nearly all subsequent reads. Rate limits and latency are practically eliminated. Desktop developers can stop managing rate limits and use this new data to create an entirely new user experience. On our end, we hope to reduce costs and increase site reliability.
      *
      * @throws IllegalStateException when non-UserStreamListener is set, or no listener is set
