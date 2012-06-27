@@ -27,8 +27,7 @@ public class SyncTweetFileStream extends CoreStreamFunctions implements StatusSt
             line = br.readLine();
             if (null == line) {
                 //invalidate this status stream
-               
-				
+               throw new TwitterException("End of file reached");
             }
     	 } catch (IOException e) {
 				// TODO Auto-generated catch block
