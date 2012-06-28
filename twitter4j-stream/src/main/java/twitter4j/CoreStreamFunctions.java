@@ -165,9 +165,8 @@ abstract class CoreStreamFunctions {
         return userList;
     }
 
-    protected void handleTweetTypes(String line) throws JSONException,
+    protected void handleTweetTypes(JSONObject json) throws JSONException,
     TwitterException {
-    	JSONObject json = new JSONObject(line);
     	JSONObjectType jsonObjectType = JSONObjectType.determine(json);
     	if (logger.isDebugEnabled()) {
     		logger.debug("Received:", CONF.isPrettyDebugEnabled() ? json.toString(1) : json.toString());

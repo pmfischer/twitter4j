@@ -20,6 +20,7 @@ import twitter4j.conf.Configuration;
 import twitter4j.internal.async.Dispatcher;
 import twitter4j.internal.http.HttpResponse;
 import twitter4j.internal.json.DataObjectFactoryUtil;
+import twitter4j.internal.org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -86,7 +87,8 @@ abstract class AbstractStreamImplementation extends CoreStreamFunctions{
                             if (CONF.isJSONStoreEnabled()) {
                                 DataObjectFactoryUtil.clearThreadLocalMap();
                             }
-                            handleTweetTypes(line);
+                            JSONObject json = new JSONObject(line);
+                            handleTweetTypes(json);
                         } catch (Exception ex) {
                             onException(ex);
                         }

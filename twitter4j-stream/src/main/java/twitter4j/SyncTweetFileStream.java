@@ -10,9 +10,10 @@ import twitter4j.internal.org.json.JSONException;
 import twitter4j.internal.org.json.JSONObject;
 import twitter4j.internal.util.z_T4JInternalParseUtil;
 
-public class SyncTweetFileStream extends CoreStreamFunctions implements StatusStream{
+public class SyncTweetFileStream extends CoreStreamFunctions implements StatusStream, JSONStream{
 	InputStream is;
 	BufferedReader br;
+	boolean outputJSON = false;
     
     public SyncTweetFileStream (InputStream stream, Configuration conf) throws IOException {
     	super(conf);
@@ -35,7 +36,11 @@ public class SyncTweetFileStream extends CoreStreamFunctions implements StatusSt
 			}
             if (line != null && line.length() > 0) {
             	try {
-            		handleTweetTypes(line);
+            		JSONObject json = new JSONObject(line);
+            		if (outputJSON)
+            			onJSON(json);
+            		else
+            			handleTweetTypes(json);
             	} catch (Exception ex) {
             		onException(ex);
             	}
@@ -56,9 +61,21 @@ public class SyncTweetFileStream extends CoreStreamFunctions implements StatusSt
             StreamListener[] list = new StreamListener[1];
             list[0] = listener;
             this.listeners = list;
+            this.outputJSON = false;
             handleNextElement();
         }
 
+
+		@Override
+		public void next(JSONListener listener) throws TwitterException {
+			StreamListener[] list = new StreamListener[1];
+            list[0] = listener;
+            this.listeners = list;
+            this.outputJSON = true;
+            handleNextElement();
+		}
+
+        
         public void next(StreamListener[] listeners) throws TwitterException {
             this.listeners = listeners;
             handleNextElement();
@@ -70,6 +87,12 @@ public class SyncTweetFileStream extends CoreStreamFunctions implements StatusSt
             }
         }
 
+        protected void onJSON(JSONObject json) {
+        	 for (StreamListener listener : listeners) {
+                 ((JSONListener) listener).onJSON(json);
+             }
+        }
+        
         protected void onDelete(JSONObject json) throws TwitterException, JSONException {
             for (StreamListener listener : listeners) {
                 JSONObject deletionNotice = json.getJSONObject("delete");
@@ -104,6 +127,8 @@ public class SyncTweetFileStream extends CoreStreamFunctions implements StatusSt
             }
         }
 
+        
+        
 		@Override
 		public void close() throws IOException {
 			br.close();
